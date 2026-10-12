@@ -1,9 +1,9 @@
 import "server-only";
-import { eq } from "drizzle-orm";
 import { cache } from "react";
 import { z } from "zod";
 import { getDb } from "@/db";
 import { config } from "@/db/schema";
+import { HEX_COLOR, THEME_NAMES } from "./theme";
 
 // Every field uses .catch(): a missing or invalid stored value falls back to the default,
 // so adding a setting never needs a migration and old data never breaks a page.
@@ -58,11 +58,31 @@ export const profileSchema = z.object({
 
 export type Profile = z.output<typeof profileSchema>;
 
-type ConfigKey = "settings" | "profile";
+/** Optional color override: "" keeps the preset's color. */
+const color = z.union([z.literal(""), z.string().regex(HEX_COLOR)]).catch("");
+
+/** The look of the public page and dashboard. Presets live in lib/theme. */
+export const designSchema = z.object({
+  theme: z.enum(THEME_NAMES).catch("classic"),
+  /** Buttons and highlights. */
+  primary: color,
+  /** Soft background surfaces. */
+  accent: color,
+});
+
+export type Design = z.output<typeof designSchema>;
+
+type ConfigKey = "settings" | "profile" | "design";
+
+/** Every stored document in one query, shared by all components rendering the same request. */
+const readAll = cache(async (): Promise<Map<string, unknown>> => {
+  const rows = await getDb().select().from(config);
+  return new Map(rows.map((row) => [row.key, row.value]));
+});
 
 async function readStored(key: ConfigKey): Promise<object> {
-  const row = await getDb().query.config.findFirst({ where: eq(config.key, key) });
-  return row?.value && typeof row.value === "object" ? row.value : {};
+  const value = (await readAll()).get(key);
+  return value && typeof value === "object" ? value : {};
 }
 
 async function writeStored(key: ConfigKey, value: object) {
@@ -74,6 +94,7 @@ async function writeStored(key: ConfigKey, value: object) {
 
 export const getSettings = cache(async () => settingsSchema.parse(await readStored("settings")));
 export const getProfile = cache(async () => profileSchema.parse(await readStored("profile")));
+export const getDesign = cache(async () => designSchema.parse(await readStored("design")));
 
 export async function saveSettings(changes: Partial<Settings>) {
   await writeStored("settings", settingsSchema.parse({ ...(await getSettings()), ...changes }));
@@ -81,4 +102,8 @@ export async function saveSettings(changes: Partial<Settings>) {
 
 export async function saveProfile(changes: Partial<Profile>) {
   await writeStored("profile", profileSchema.parse({ ...(await getProfile()), ...changes }));
+}
+
+export async function saveDesign(design: Design) {
+  await writeStored("design", designSchema.parse(design));
 }

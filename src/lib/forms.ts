@@ -28,7 +28,8 @@ export async function failure(key: ErrorKey): Promise<ActionState> {
 
 // Field schemas for FormData values.
 export const fields = {
-  text: (max = 500) => z.string().trim().max(max).catch(""),
+  /** Optional text. A missing field is "", but text over the limit is an error rather than silently dropped. */
+  text: (max = 500) => z.string().trim().max(max).default(""),
   requiredText: (max = 200) => z.string().trim().min(1).max(max),
   checkbox: z.preprocess((value) => value === "on" || value === "true", z.boolean()),
   int: (min: number, max: number) => z.coerce.number().int().min(min).max(max),
@@ -36,12 +37,12 @@ export const fields = {
     (value) => (value === "" || value === undefined ? null : value),
     z.coerce.number().int().positive().nullable(),
   ),
-  /** Money typed in major units ("45.5"); stored as minor units. Empty means no price. */
+  /** Money typed in major units ("45.5"); stored as minor units. Empty means no price. Never negative. */
   money: z
     .string()
     .transform(parseMoney)
-    .refine((value) => value === null || Number.isFinite(value)),
-  /** Money that must be present. */
+    .refine((value) => value === null || (Number.isFinite(value) && value >= 0)),
+  /** Money that must be present. May be negative (a discount option). */
   requiredMoney: z
     .string()
     .transform((value) => parseMoney(value) ?? 0)

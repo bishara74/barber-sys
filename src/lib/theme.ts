@@ -1,8 +1,8 @@
 /**
- * Design presets. Each deployment picks one with the THEME var and can override
- * the main colors with THEME_PRIMARY / THEME_ACCENT (hex, e.g. "#c9a227").
+ * Design presets. Each shop picks one in the dashboard (Page & links → Design) and can
+ * override the main and accent colors. The choice is stored in the database (lib/config).
  */
-type Theme = {
+export type Theme = {
   scheme: "light" | "dark";
   background: string;
   foreground: string;
@@ -85,7 +85,10 @@ export const THEMES = {
 
 export type ThemeName = keyof typeof THEMES;
 
-const HEX = /^#[0-9a-f]{6}$/i;
+export const THEME_NAMES = Object.keys(THEMES) as [ThemeName, ...ThemeName[]];
+
+/** A color as stored and as sent by <input type="color">, e.g. "#c9a227". */
+export const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 
 /** Black or white text, whichever reads better on the given color. */
 function readableOn(hex: string): string {
@@ -97,18 +100,21 @@ function readableOn(hex: string): string {
   return luminance > 0.4 ? "#111111" : "#ffffff";
 }
 
-export function resolveTheme(name: string, primary: string, accent: string): Theme {
-  const base: Theme = name in THEMES ? THEMES[name as ThemeName] : THEMES.classic;
+/** A shop's design choice: a preset plus optional color overrides ("" keeps the preset's color). */
+export type ThemeChoice = { theme: string; primary: string; accent: string };
+
+export function resolveTheme({ theme, primary, accent }: ThemeChoice): Theme {
+  const base: Theme = theme in THEMES ? THEMES[theme as ThemeName] : THEMES.classic;
   return {
     ...base,
-    primary: HEX.test(primary) ? primary : base.primary,
-    accent: HEX.test(accent) ? accent : base.accent,
+    primary: HEX_COLOR.test(primary) ? primary : base.primary,
+    accent: HEX_COLOR.test(accent) ? accent : base.accent,
   };
 }
 
-/** CSS custom properties consumed by globals.css. */
-export function themeCss(theme: Theme): string {
-  const vars: Record<string, string> = {
+/** CSS custom properties consumed by globals.css. Also used to preview a theme inside one element. */
+export function themeVars(theme: Theme): Record<`--${string}`, string> {
+  return {
     "--background": theme.background,
     "--foreground": theme.foreground,
     "--card": theme.card,
@@ -118,8 +124,11 @@ export function themeCss(theme: Theme): string {
     "--primary-foreground": readableOn(theme.primary),
     "--accent": theme.accent,
     "--radius": theme.radius,
-    "color-scheme": theme.scheme,
   };
+}
+
+export function themeCss(theme: Theme): string {
+  const vars = { ...themeVars(theme), "color-scheme": theme.scheme };
   return `:root{${Object.entries(vars)
     .map(([key, value]) => `${key}:${value}`)
     .join(";")}}`;

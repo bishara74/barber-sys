@@ -180,7 +180,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/bookings
           <Section title={t("staffNote")} description={t("staffNoteHint")}>
             <ActionForm action={saveStaffNote}>
               <input type="hidden" name="id" value={booking.id} />
-              <TextareaField label={t("staffNote")} name="staffNote" defaultValue={booking.staffNote} rows={4} />
+              <TextareaField label={t("staffNote")} name="staffNote" defaultValue={booking.staffNote} rows={4} maxLength={2000} />
               <SubmitButton variant="outline">{tc("save")}</SubmitButton>
             </ActionForm>
           </Section>

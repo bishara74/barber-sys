@@ -3,8 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import { localeDirection, localized } from "@/i18n/locales";
-import { getProfile } from "@/lib/config";
-import { getDeploymentConfig } from "@/lib/env";
+import { getDesign, getProfile } from "@/lib/config";
 import { requestOrigin } from "@/lib/request";
 import { resolveTheme, themeCss } from "@/lib/theme";
 import { mediaUrl } from "@/lib/utils";
@@ -18,9 +17,9 @@ const font = IBM_Plex_Sans_Arabic({
   display: "swap",
 });
 
-function currentTheme() {
-  const { theme, themePrimary, themeAccent } = getDeploymentConfig();
-  return resolveTheme(theme, themePrimary, themeAccent);
+/** The shop's design, chosen in the dashboard and stored in the database. */
+async function currentTheme() {
+  return resolveTheme(await getDesign());
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,13 +37,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export function generateViewport(): Viewport {
-  return { themeColor: currentTheme().background };
+export async function generateViewport(): Promise<Viewport> {
+  return { themeColor: (await currentTheme()).background };
 }
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const locale = await getLocale();
-  const theme = currentTheme();
+  const [locale, theme] = await Promise.all([getLocale(), currentTheme()]);
 
   return (
     <html

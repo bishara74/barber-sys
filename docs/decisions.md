@@ -19,7 +19,7 @@
 | O | Booking history | Each booking stores a snapshot of service name, options, price and duration. Services with history are archived, never deleted |
 | P | Currency | Shekel (₪) by default, configurable |
 | Q | Tenancy | One deployment per client: own Worker, D1 database and R2 bucket. Simple isolation, per-client domain and design. All clients are updated from one build with `client:deploy --all` |
-| R | Design per client | Theme preset and color overrides are Wrangler vars, read at request time (redeploy only, no rebuild). Branding content (name, logo, links) is data the owner edits |
+| R | Design per client | Theme preset and color overrides are data in the shop's database, picked by the owner in the dashboard with a live preview and applied instantly. Like the name, logo and links, the design is branding the shop owns; vars are kept for what must not change at runtime (time zone, default language, Turnstile) |
 | S | Service types | Admin-defined types (Barbershop, Tattoo, Hair…) group services, so one system serves any appointment business |
 | T | Customer identity | No customer accounts or anonymous login. Name + phone, and a private, unguessable link per booking to view, reschedule or cancel |
 | U | Pending bookings | A pending booking holds its slot until approved, declined or expired (default 12 h). Availability ignores expired ones immediately; a cron marks them expired |

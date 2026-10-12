@@ -71,7 +71,7 @@ Milestones: **MVP** (first shop), **Pilot** (polish with 2-3 shops), **Phase 2**
 
 ### Deployment
 - [x] One deployment per client: Worker + D1 + R2, created by `npm run client:new`
-- [x] Design per client through vars: six theme presets plus color overrides
+- [x] Design per client, picked by the owner in the dashboard: six theme presets plus color overrides, live preview
 - [x] Build once, migrate and deploy all clients with `npm run client:deploy -- --all`
 - [x] CI (lint, typecheck, tests, build) and optional deploy on merge to main
 - [x] Cron job that expires unapproved bookings
@@ -92,7 +92,6 @@ Milestones: **MVP** (first shop), **Pilot** (polish with 2-3 shops), **Phase 2**
 - [ ] Push notifications for new bookings
 - [ ] Installable PWA for the dashboard
 - [ ] Gallery / portfolio section (for tattoo artists)
-- [ ] Owner-editable theme colors in the dashboard
 
 ## Later
 - [ ] AI chat booking through WhatsApp

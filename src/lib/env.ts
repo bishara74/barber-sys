@@ -8,22 +8,19 @@ export function getBindings(): CloudflareEnv {
 }
 
 export type DeploymentConfig = {
-  theme: string;
-  themePrimary: string;
-  themeAccent: string;
   defaultLocale: Locale;
   timeZone: string;
   turnstileSiteKey: string;
   turnstileSecretKey: string;
 };
 
-/** Per-deployment settings that come from Wrangler vars and secrets, not the database. */
+/**
+ * Per-deployment settings that come from Wrangler vars and secrets, not the database.
+ * The design is shop data and lives in the database (lib/config).
+ */
 export function getDeploymentConfig(): DeploymentConfig {
   const env = getBindings();
   return {
-    theme: env.THEME || "classic",
-    themePrimary: env.THEME_PRIMARY ?? "",
-    themeAccent: env.THEME_ACCENT ?? "",
     defaultLocale: isLocale(env.DEFAULT_LOCALE) ? env.DEFAULT_LOCALE : "ar",
     timeZone: env.TIMEZONE || "Asia/Jerusalem",
     turnstileSiteKey: env.TURNSTILE_SITE_KEY ?? "",

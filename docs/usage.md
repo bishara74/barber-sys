@@ -218,7 +218,11 @@ order. There is no online checkout.
 
 Everything can be reordered with the arrows and hidden without deleting.
 
-The colors and style of the page are set when your site is deployed. Ask whoever manages your site to change them.
+### Design
+
+Under **Design**, pick a **style** (Classic, Noir, Ocean, Rose, Forest or Ink; light or dark), and optionally your own
+**main color** (buttons and highlights) and **accent color** (soft backgrounds). The preview shows the result before
+you save. After **Save**, your public page and the dashboard use the new look right away.
 
 ---
 

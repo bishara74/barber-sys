@@ -22,7 +22,7 @@ Each client gets their own deployment on Cloudflare, with their own database, ph
   status changes, ready-made WhatsApp messages, time off, services with option groups, products with photos,
   page and links, staff and hours, customers with history, settings, owner and staff logins.
 - **Arabic (RTL) and English** throughout, with a language switch.
-- **Per-client design** through deployment variables: six theme presets plus color overrides.
+- **Per-client design** picked by the owner in the dashboard: six theme presets plus color overrides, with a live preview.
 
 ## Stack
 

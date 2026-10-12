@@ -8,7 +8,7 @@ Money is stored in minor units (agorot): `4500` = ₪45. Times are stored as UTC
 
 | Table | Holds |
 |---|---|
-| `config` | Two JSON documents: `profile` (name, texts, phone, WhatsApp, logo, cover) and `settings` (booking rules). Validated with defaults in `src/lib/config.ts` |
+| `config` | Three JSON documents: `profile` (name, texts, phone, WhatsApp, logo, cover), `settings` (booking rules) and `design` (theme preset and color overrides). Validated with defaults in `src/lib/config.ts` |
 | `users` | Dashboard logins: email, PBKDF2 password hash, role (`owner` / `staff`), optional linked staff member |
 | `sessions` | Login sessions; the id is the SHA-256 of the cookie token |
 | `links` | Social icons (`kind = social`, `platform`) and link buttons (`kind = button`, bilingual label) |

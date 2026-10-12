@@ -5,20 +5,22 @@
 //                                [--locale ar|en] [--timezone Asia/Jerusalem]
 //
 // Creates: a D1 database "<slug>-db", an R2 bucket "<slug>-media", runs the migrations.
+// --theme, --primary and --accent set the starting design in the database; the owner can
+// change it later under Page & links → Design.
 // The Worker itself is created on the first deploy (npm run client:deploy -- <slug>).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { clientConfig, DEPLOYMENTS, fail, ROOT, SLUG_PATTERN, wrangler } from "./lib.mjs";
+import { clientConfig, DEPLOYMENTS, executeSql, fail, ROOT, SLUG_PATTERN, sqlString, wrangler } from "./lib.mjs";
 
 const THEMES = ["classic", "noir", "ocean", "rose", "forest", "ink"];
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: {
-    theme: { type: "string", default: "classic" },
-    primary: { type: "string", default: "" },
-    accent: { type: "string", default: "" },
+    theme: { type: "string" },
+    primary: { type: "string" },
+    accent: { type: "string" },
     locale: { type: "string", default: "ar" },
     timezone: { type: "string", default: "Asia/Jerusalem" },
   },
@@ -28,7 +30,7 @@ const slug = positionals[0];
 if (!slug || !SLUG_PATTERN.test(slug)) {
   fail("Pass a slug of 3-40 lowercase letters, digits or dashes, e.g. abu-ali");
 }
-if (!THEMES.includes(values.theme)) fail(`--theme must be one of: ${THEMES.join(", ")}`);
+if (values.theme && !THEMES.includes(values.theme)) fail(`--theme must be one of: ${THEMES.join(", ")}`);
 for (const color of [values.primary, values.accent]) {
   if (color && !/^#[0-9a-f]{6}$/i.test(color)) fail(`Colors must look like #c9a227 (got ${color})`);
 }
@@ -62,9 +64,6 @@ const deployment = {
   triggers: { crons: ["*/15 * * * *"] },
   observability: { enabled: true },
   vars: {
-    THEME: values.theme,
-    THEME_PRIMARY: values.primary,
-    THEME_ACCENT: values.accent,
     DEFAULT_LOCALE: values.locale,
     TIMEZONE: values.timezone,
     TURNSTILE_SITE_KEY: "",
@@ -80,6 +79,16 @@ console.log(`\n✔ Wrote deployments/${slug}.jsonc`);
 
 console.log("\n→ Applying database migrations");
 wrangler(["d1", "migrations", "apply", "DB", "--remote", "--config", config]);
+
+if (values.theme || values.primary || values.accent) {
+  console.log("\n→ Saving the design");
+  const design = { theme: values.theme ?? "classic", primary: values.primary ?? "", accent: values.accent ?? "" };
+  executeSql(
+    `INSERT INTO config (key, value) VALUES ('design', ${sqlString(JSON.stringify(design))})
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value;`,
+    { slug },
+  );
+}
 
 console.log(`
 ✔ ${slug} is ready to deploy. Next:

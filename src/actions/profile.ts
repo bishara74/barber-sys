@@ -6,11 +6,18 @@ import { z } from "zod";
 import { getDb } from "@/db";
 import { links, SOCIAL_PLATFORMS } from "@/db/schema";
 import { requireOwner } from "@/lib/auth";
-import { getProfile, getSettings, saveProfile as storeProfile, type Profile } from "@/lib/config";
+import {
+  getProfile,
+  getSettings,
+  saveDesign as storeDesign,
+  saveProfile as storeProfile,
+  type Profile,
+} from "@/lib/config";
 import { failure, fields, parseForm, success, type ActionState } from "@/lib/forms";
 import { replaceImage } from "@/lib/media";
 import { normalizePhone } from "@/lib/phone";
 import { nextSortOrder } from "@/lib/sort";
+import { HEX_COLOR, THEME_NAMES } from "@/lib/theme";
 
 const phone = fields.text(30);
 
@@ -54,6 +61,23 @@ export async function saveProfile(_state: ActionState, formData: FormData): Prom
     console.error(error);
     return failure("imageFailed");
   }
+  refresh();
+  return success();
+}
+
+const colorOverride = z.union([z.literal(""), z.string().regex(HEX_COLOR)]);
+
+const designSchema = z.object({
+  theme: z.enum(THEME_NAMES),
+  primary: colorOverride,
+  accent: colorOverride,
+});
+
+export async function saveDesign(_state: ActionState, formData: FormData): Promise<ActionState> {
+  await requireOwner();
+  const parsed = await parseForm(designSchema, formData);
+  if (!parsed.ok) return parsed.state;
+  await storeDesign(parsed.data);
   refresh();
   return success();
 }

@@ -27,7 +27,7 @@ for (const slug of slugs) {
   if (!existsSync(clientConfig(slug))) fail(`No deployment called "${slug}". Run: npm run client:new -- ${slug}`);
 }
 
-// The build has no client-specific content: themes and settings are read at runtime.
+// The build has no client-specific content: design and settings live in each client's database.
 if (!values["skip-build"]) {
   console.log("\n→ Building");
   opennext(["build"]);

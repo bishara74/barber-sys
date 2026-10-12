@@ -21,8 +21,8 @@ export async function addTimeOff(_state: ActionState, formData: FormData): Promi
   if (!parsed.ok) return parsed.state;
   const { staffId, startsAt, endsAt, reason } = parsed.data;
 
-  // Staff accounts can only block their own time.
-  if (user.role !== "owner" && staffId !== user.staffId) return failure("notFound");
+  // Staff accounts can only block their own time, never the whole shop.
+  if (user.role !== "owner" && (staffId === null || staffId !== user.staffId)) return failure("notFound");
   if (endsAt <= startsAt) return failure("invalidRange");
 
   await getDb()
@@ -36,7 +36,7 @@ export async function deleteTimeOff(formData: FormData) {
   const user = await requireUser();
   const id = Number(formData.get("id"));
   const row = await getDb().query.timeOff.findFirst({ where: eq(timeOff.id, id) });
-  if (!row || (user.role !== "owner" && row.staffId !== user.staffId)) return;
+  if (!row || (user.role !== "owner" && (row.staffId === null || row.staffId !== user.staffId))) return;
 
   await getDb().delete(timeOff).where(eq(timeOff.id, id));
   refresh();

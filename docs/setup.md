@@ -32,8 +32,8 @@ One codebase, one deployment per client. Every client gets their own:
 | Settings file | `deployments/<slug>.jsonc` in this repo | |
 
 The app is built **once** and the same build is deployed to every client. Everything that differs between
-clients is either a Wrangler **var** in `deployments/<slug>.jsonc` (theme, colors, language, time zone)
-or **data** in that client's database (name, links, services, prices, hours, products, staff).
+clients is either a Wrangler **var** in `deployments/<slug>.jsonc` (language, time zone, Turnstile key)
+or **data** in that client's database (design, name, links, services, prices, hours, products, staff).
 
 A Cloudflare cron trigger runs every 15 minutes to mark unapproved bookings as expired (see `worker.ts`).
 
@@ -94,8 +94,9 @@ npm run preview      # production build running in the real Workers runtime (wor
 
 ### Local settings
 
-`wrangler.jsonc` is the development config. Change its `vars` to try another theme or language locally,
-e.g. `"THEME": "noir"`, then restart `npm run dev`.
+`wrangler.jsonc` is the development config. Change its `vars` to try another language or time zone locally,
+e.g. `"DEFAULT_LOCALE": "en"`, then restart `npm run dev`. To try another design, pick it in the dashboard under
+**Page & links → Design**; it applies right away.
 
 If you change bindings or vars in `wrangler.jsonc`, regenerate the TypeScript types:
 
@@ -141,14 +142,14 @@ Options:
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--theme` | `classic` | Design preset, see [Design per client](#design-per-client) |
-| `--primary` | (preset) | Main brand color, e.g. `"#c9a227"` |
-| `--accent` | (preset) | Soft background accent color |
+| `--theme` | `classic` | Starting design preset, see [Design per client](#design-per-client) |
+| `--primary` | (preset) | Starting main brand color, e.g. `"#c9a227"` |
+| `--accent` | (preset) | Starting soft background accent color |
 | `--locale` | `ar` | Language for first-time visitors (`ar` or `en`) |
 | `--timezone` | `Asia/Jerusalem` | Shop time zone (IANA name) |
 
-This creates the D1 database and R2 bucket, writes `deployments/abu-ali.jsonc` and applies the database
-migrations. **Commit the new file**: it holds no secrets.
+This creates the D1 database and R2 bucket, writes `deployments/abu-ali.jsonc`, applies the database
+migrations and saves the design flags (if any) in the database. **Commit the new file**: it holds no secrets.
 
 ### 2. Deploy
 
@@ -179,18 +180,14 @@ profile and links, service types and services, staff and hours, then settings.
 
 ## Design per client
 
-The design is chosen per deployment through Wrangler vars in `deployments/<slug>.jsonc`:
+Each shop's design is stored in its own database (the `design` document in the `config` table) and picked in the
+dashboard under **Page & links → Design**, with a live preview. Saving applies it right away, to the public page and
+the dashboard. No redeploy, no restart and no change in this repo.
 
-```jsonc
-"vars": {
-  "THEME": "noir",
-  "THEME_PRIMARY": "#c9a227",
-  "THEME_ACCENT": "",
-  ...
-}
-```
+Owners can change it themselves, and you can set it for them by logging in as an owner. To start a new client with a
+design already chosen, pass `--theme`, `--primary` and `--accent` to `npm run client:new`.
 
-| `THEME` | Look |
+| Preset | Look |
 |---|---|
 | `classic` | Light, warm cream with burnt orange (default) |
 | `noir` | Dark, black with gold |
@@ -199,15 +196,14 @@ The design is chosen per deployment through Wrangler vars in `deployments/<slug>
 | `forest` | Light, olive green |
 | `ink` | Dark, sharp corners with red (good for tattoo studios) |
 
-- `THEME_PRIMARY` overrides the main color (buttons, highlights). Text on it switches between black and white
-  automatically for contrast.
-- `THEME_ACCENT` overrides the soft accent surface color.
-- Leave them as `""` to use the preset's colors.
+- **Main color** overrides the preset's main color (buttons, highlights). Text on it switches between black and
+  white automatically for contrast.
+- **Accent color** overrides the soft accent surface color.
+- Without a custom color, the preset's own color is used.
 
-The values are read at **request time**, so changing them needs only a redeploy (`npm run client:deploy -- <slug>`),
-not a code change. The presets live in `src/lib/theme.ts`. Add new presets there.
-
-The shop's **name, logo, cover photo, links and texts** are not vars: the owner edits them in the dashboard.
+The presets live in `src/lib/theme.ts`. Add new presets there (and their names in `messages/*.json` under
+`admin.design.themes`); every client can pick them after the next deploy. A shop without a saved design gets
+`classic`.
 
 ---
 
@@ -347,9 +343,6 @@ Photos in R2 are not versioned. They are only deleted when the owner removes the
 
 | Var | Example | Purpose |
 |---|---|---|
-| `THEME` | `noir` | Design preset |
-| `THEME_PRIMARY` | `#c9a227` | Optional main color override |
-| `THEME_ACCENT` | `#f3ece2` | Optional accent color override |
 | `DEFAULT_LOCALE` | `ar` | Language for visitors who haven't picked one |
 | `TIMEZONE` | `Asia/Jerusalem` | Time zone for hours, slots and dates. Don't change it once a shop has bookings. |
 | `TURNSTILE_SITE_KEY` | `0x4AAA...` | Optional Turnstile site key |
@@ -374,6 +367,8 @@ Photos in R2 are not versioned. They are only deleted when the owner removes the
 Booking mode (instant or approval), how long pending bookings hold their slot, slot length mode, start-time grid,
 minimum notice, how far ahead people can book, cancellation window, bookings per phone, staff choice,
 phone country code and currency. See [usage.md → Settings](usage.md#settings).
+
+The design (preset and colors) is under **Page & links → Design**. See [Design per client](#design-per-client).
 
 ### Scripts
 

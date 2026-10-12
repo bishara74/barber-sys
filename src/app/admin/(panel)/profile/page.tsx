@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { deleteLink, saveLink, saveProfile } from "@/actions/profile";
 import { BilingualFields } from "@/components/admin/bilingual-fields";
+import { DesignForm } from "@/components/admin/design-form";
 import { MoveButtons } from "@/components/admin/move-buttons";
 import { PLATFORM_LABELS, SocialIcon } from "@/components/social-icon";
 import { ActionForm, SubmitButton } from "@/components/ui/action-form";
@@ -12,7 +13,7 @@ import { Checkbox, InputField, SelectField } from "@/components/ui/field";
 import { ImageInput } from "@/components/ui/image-input";
 import { SOCIAL_PLATFORMS, type Link } from "@/db/schema";
 import { requireOwner } from "@/lib/auth";
-import { getProfile } from "@/lib/config";
+import { getDesign, getProfile } from "@/lib/config";
 import { getLinks } from "@/lib/links";
 import { displayPhone } from "@/lib/phone";
 import { mediaUrl } from "@/lib/utils";
@@ -24,10 +25,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProfilePage() {
   await requireOwner();
-  const [t, tc, profile, { socials, buttons }] = await Promise.all([
+  const [t, tc, td, profile, design, { socials, buttons }] = await Promise.all([
     getTranslations("admin.profile"),
     getTranslations("common"),
+    getTranslations("admin.design"),
     getProfile(),
+    getDesign(),
     getLinks(),
   ]);
 
@@ -59,11 +62,12 @@ export default async function ProfilePage() {
             />
             <InputField label={t("mapUrl")} name="mapUrl" type="url" dir="ltr" defaultValue={profile.mapUrl} />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <InputField label={t("phone")} name="phone" type="tel" dir="ltr" defaultValue={displayPhone(profile.phone)} />
+              <InputField label={t("phone")} name="phone" type="tel" dir="ltr" maxLength={30} defaultValue={displayPhone(profile.phone)} />
               <InputField
                 label={t("whatsapp")}
                 name="whatsapp"
                 type="tel"
+                maxLength={30}
                 dir="ltr"
                 hint={t("whatsappHint")}
                 defaultValue={displayPhone(profile.whatsapp)}
@@ -91,6 +95,10 @@ export default async function ProfilePage() {
             </div>
             <SubmitButton>{tc("save")}</SubmitButton>
           </ActionForm>
+        </Section>
+
+        <Section title={td("title")} description={td("description")}>
+          <DesignForm design={design} />
         </Section>
 
         <Section title={t("socials")} description={t("socialsHint")}>

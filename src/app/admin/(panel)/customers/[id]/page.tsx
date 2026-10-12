@@ -74,7 +74,7 @@ export default async function CustomerPage({ params }: PageProps<"/admin/custome
             <ActionForm action={saveCustomer}>
               <input type="hidden" name="id" value={customer.id} />
               <InputField label={t("name")} name="name" required maxLength={80} defaultValue={customer.name} />
-              <InputField label={t("phone")} name="phone" type="tel" dir="ltr" required defaultValue={displayPhone(customer.phone)} />
+              <InputField label={t("phone")} name="phone" type="tel" dir="ltr" required maxLength={30} defaultValue={displayPhone(customer.phone)} />
               <TextareaField label={t("notes")} name="notes" rows={4} maxLength={2000} defaultValue={customer.notes} />
               <SubmitButton>{tc("save")}</SubmitButton>
             </ActionForm>

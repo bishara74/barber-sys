@@ -48,6 +48,8 @@ export async function createBooking(input: z.input<typeof bookingInput>): Promis
 
 export async function rescheduleBooking(token: string, startsAt: number): Promise<{ ok: true } | { ok: false; error: string }> {
   const t = await getTranslations("errors");
+  // Server Actions are public endpoints, so the arguments can be anything.
+  if (typeof token !== "string" || !Number.isSafeInteger(startsAt)) return { ok: false, error: t("checkFields") };
   const booking = await findBookingByToken(token);
   if (!booking) return { ok: false, error: t("notFound") };
 

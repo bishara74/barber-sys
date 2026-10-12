@@ -112,6 +112,7 @@ export function ShopBookingForm({ types, staff, defaultStart, defaultStaffId, wa
           label={t("customerName")}
           name="name"
           required
+          maxLength={80}
           defaultValue={walkIn ? t("walkInTitle") : ""}
           autoComplete="off"
         />
@@ -119,6 +120,7 @@ export function ShopBookingForm({ types, staff, defaultStart, defaultStaffId, wa
           label={t("customerPhone")}
           name="phone"
           type="tel"
+          maxLength={30}
           dir="ltr"
           hint={walkIn ? t("phoneOptional") : undefined}
           required={!walkIn}
@@ -126,7 +128,7 @@ export function ShopBookingForm({ types, staff, defaultStart, defaultStaffId, wa
         />
       </div>
 
-      <TextareaField label={t("customerNote")} name="note" rows={2} />
+      <TextareaField label={t("customerNote")} name="note" rows={2} maxLength={500} />
       <SubmitButton>{t("create")}</SubmitButton>
     </ActionForm>
   );

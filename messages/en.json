@@ -326,6 +326,29 @@
       "addButton": "Add button",
       "visible": "Show on the page"
     },
+    "design": {
+      "title": "Design",
+      "description": "Colors and style of your public page and this dashboard.",
+      "theme": "Style",
+      "themes": {
+        "classic": "Classic",
+        "noir": "Noir",
+        "ocean": "Ocean",
+        "rose": "Rose",
+        "forest": "Forest",
+        "ink": "Ink"
+      },
+      "light": "Light",
+      "dark": "Dark",
+      "primary": "Main color",
+      "primaryHint": "Buttons and highlights. Text on it turns black or white automatically.",
+      "accent": "Accent color",
+      "accentHint": "Soft background behind the cover and highlights.",
+      "custom": "Use my own color",
+      "preview": "Preview",
+      "previewShop": "Your shop",
+      "previewService": "Haircut"
+    },
     "staff": {
       "title": "Staff",
       "add": "Add staff member",
