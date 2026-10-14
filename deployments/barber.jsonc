@@ -1,0 +1,48 @@
+// Deployment for "barber". Created by scripts/new-client.mjs; safe to edit (see docs/setup.md).
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "barber",
+  "main": "../worker.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": "../.open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "barber"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "barber-db",
+      "database_id": "137dea72-88a1-462a-8f4c-4344a7f6437e",
+      "migrations_dir": "../drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "barber-media"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "*/15 * * * *"
+    ]
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "DEFAULT_LOCALE": "en",
+    "TIMEZONE": "Asia/Jerusalem",
+    "TURNSTILE_SITE_KEY": ""
+  }
+}
