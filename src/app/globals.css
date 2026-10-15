@@ -15,6 +15,24 @@
   --radius: 14px;
 }
 
+/*
+ * Tones derived from the theme colors, so every preset and custom color gets them for free.
+ * Declared again on .theme-scope so a scoped preview (the design picker) derives from its own colors.
+ */
+:root,
+.theme-scope {
+  --primary-soft: color-mix(in oklab, var(--primary) 12%, var(--card));
+  --primary-tint: color-mix(in oklab, var(--primary) 6%, var(--background));
+  --ring: color-mix(in oklab, var(--primary) 35%, transparent);
+  --surface: color-mix(in oklab, var(--accent) 45%, var(--card));
+  --shadow-tint: color-mix(in oklab, var(--foreground) 9%, transparent);
+}
+
+[data-scheme="dark"],
+[data-scheme="dark"] .theme-scope {
+  --shadow-tint: rgb(0 0 0 / 0.5);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -23,15 +41,116 @@
   --color-border: var(--border);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-tint: var(--primary-tint);
   --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-ring: var(--ring);
   --radius-theme: var(--radius);
   --font-sans: var(--font-app), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-soft: 0 1px 2px var(--shadow-tint), 0 4px 14px -6px var(--shadow-tint);
+  --shadow-lift: 0 2px 4px -1px var(--shadow-tint), 0 14px 32px -10px var(--shadow-tint);
+  --shadow-glow: 0 10px 28px -10px color-mix(in oklab, var(--primary) 70%, transparent);
+}
+
+/*
+ * Short, light animations. All of them are switched off for people who prefer less motion.
+ * Items in a list fade in one after another when they set their position: style={{ "--i": index }}.
+ */
+@theme {
+  --animate-fade-up: fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) calc(min(var(--i, 0), 12) * 55ms) both;
+  --animate-fade-in: fade-in 0.35s ease-out both;
+  --animate-scale-in: scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) calc(min(var(--i, 0), 12) * 55ms) both;
+  --animate-slide-up: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  --animate-draw: draw 0.6s 0.2s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes shine {
+  from {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  25%,
+  to {
+    transform: translateX(400%) skewX(-20deg);
+  }
+}
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* A loading placeholder. */
+@utility skeleton {
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, var(--accent) 25%, var(--surface) 50%, var(--accent) 75%) 0 0 / 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--primary-soft);
+  color: var(--foreground);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Latin headings read better slightly tighter. Arabic is left alone: spacing breaks its joined letters. */
+:lang(en) :is(h1, h2, .tracking-display) {
+  letter-spacing: -0.015em;
 }
 
 /* Native date and time pickers follow the theme. */
@@ -39,4 +158,131 @@ input[type="date"],
 input[type="time"],
 input[type="datetime-local"] {
   color-scheme: inherit;
+}
+
+/* Number inputs without spinners: they get in the way on phones. */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Thin scrollbars for horizontal strips (days, calendar). */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+@layer components {
+  /* Cover placeholder: the shop's main color with a soft glow and faint barber-pole stripes. */
+  .hero-fallback {
+    background:
+      repeating-linear-gradient(
+        135deg,
+        color-mix(in oklab, var(--primary-foreground) 9%, transparent) 0 2px,
+        transparent 2px 18px
+      ),
+      radial-gradient(90% 120% at 10% 0%, color-mix(in oklab, var(--primary-foreground) 22%, transparent), transparent 60%),
+      radial-gradient(80% 100% at 100% 100%, color-mix(in oklab, var(--primary) 60%, black), transparent 70%),
+      linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--primary) 75%, var(--accent)));
+  }
+
+  /* Soft colored glow behind the top of a page. */
+  .page-glow {
+    background:
+      radial-gradient(70% 45% at 50% -10%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%),
+      var(--background);
+  }
+
+  /* A light sweep across the main call to action every few seconds. */
+  .btn-shine {
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0; /* physical, so the sweep is the same in Arabic and English */
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.28), transparent);
+    animation: shine 5s ease-in-out 1.5s infinite;
+    pointer-events: none;
+  }
+
+  /* Hidden until the page scrolls past the hero (see below); never shown without scroll timelines. */
+  .scroll-header {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+/* Scroll-driven effects: CSS only, no JavaScript. Browsers without support simply skip them. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+
+    .parallax {
+      animation: parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 420px;
+    }
+
+    .scroll-header {
+      animation: scroll-header linear both;
+      animation-timeline: scroll(root);
+      animation-range: 260px 320px;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+}
+
+@keyframes parallax {
+  to {
+    transform: translateY(32%) scale(1.06);
+  }
+}
+
+@keyframes scroll-header {
+  from {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

@@ -106,12 +106,14 @@ export function formatDate(
   ms: number,
   locale: Locale,
   timeZone: string,
-  style: "short" | "long" = "long",
+  style: "short" | "long" | "compact" = "long",
 ): string {
   const options: Intl.DateTimeFormatOptions =
     style === "long"
       ? { timeZone, weekday: "long", day: "numeric", month: "long" }
-      : { timeZone, weekday: "short", day: "numeric", month: "short" };
+      : style === "short"
+        ? { timeZone, weekday: "short", day: "numeric", month: "short" }
+        : { timeZone, day: "numeric", month: "short" };
   return formatter(intlLocale(locale), options).format(ms);
 }
 

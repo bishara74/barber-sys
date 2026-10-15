@@ -4,7 +4,7 @@ import type { Booking } from "@/db/schema";
 import { effectiveStatus } from "@/lib/bookings";
 import { addDays, addMonths, formatDay, formatTime, localDate, startOfWeek } from "@/lib/time";
 import { cn } from "@/lib/utils";
-import { STATUS_STYLES } from "../booking-status";
+import { STATUS_DOT } from "../booking-status";
 
 const MAX_PER_DAY = 3;
 
@@ -36,10 +36,10 @@ export function MonthGrid({ month, bookings, timeZone, now, linkParams }: MonthG
   }
 
   return (
-    <div className="overflow-hidden rounded-theme border border-border bg-card">
-      <div className="grid grid-cols-7 border-b border-border text-center text-xs text-muted">
+    <div className="overflow-hidden rounded-theme border border-border bg-card shadow-soft">
+      <div className="grid grid-cols-7 border-b border-border bg-surface text-center text-xs font-medium text-muted">
         {days.slice(0, 7).map((day) => (
-          <div key={day} className="py-2">
+          <div key={day} className="py-2.5">
             {formatDay(day, locale, { weekday: "short" })}
           </div>
         ))}
@@ -47,36 +47,50 @@ export function MonthGrid({ month, bookings, timeZone, now, linkParams }: MonthG
       <div className="grid grid-cols-7">
         {days.map((day) => {
           const items = byDay.get(day) ?? [];
+          const outside = day.slice(0, 7) !== month.slice(0, 7);
           return (
             <Link
               key={day}
               href={`/admin/calendar?view=day&date=${day}${linkParams}`}
               className={cn(
-                "min-h-24 border-b border-e border-border p-1.5 hover:bg-accent [&:nth-child(7n)]:border-e-0",
-                day.slice(0, 7) !== month.slice(0, 7) && "opacity-40",
+                "group min-h-24 border-b border-e border-border p-1.5 transition-colors hover:bg-primary-tint sm:min-h-28 [&:nth-child(7n)]:border-e-0",
+                outside && "bg-surface/50 text-muted",
               )}
             >
-              <span
-                className={cn(
-                  "inline-flex size-6 items-center justify-center rounded-full text-xs",
-                  day === today && "bg-primary text-primary-foreground",
-                )}
-              >
-                {Number(day.slice(8))}
+              <span className="flex">
+                <span
+                  className={cn(
+                    "inline-flex size-7 items-center justify-center rounded-full text-xs font-medium tabular-nums transition",
+                    day === today ? "bg-primary font-bold text-primary-foreground shadow-glow" : "group-hover:bg-card",
+                    outside && "opacity-60",
+                  )}
+                >
+                  {Number(day.slice(8))}
+                </span>
               </span>
-              <ul className="mt-1 space-y-0.5">
+              <ul className="mt-1 hidden space-y-0.5 sm:block">
                 {items.slice(0, MAX_PER_DAY).map((booking) => (
                   <li
                     key={booking.id}
-                    className={cn("truncate rounded px-1 text-[11px]", STATUS_STYLES[effectiveStatus(booking, now)])}
+                    className="flex items-center gap-1 truncate rounded-md bg-surface px-1 py-0.5 text-[11px] ring-1 ring-border/60"
                   >
-                    <span dir="ltr">{formatTime(booking.startsAt.getTime(), locale, timeZone)}</span> {booking.customerName}
+                    <span className={cn("size-1.5 shrink-0 rounded-full", STATUS_DOT[effectiveStatus(booking, now)])} aria-hidden />
+                    <span className="font-medium tabular-nums" dir="ltr">
+                      {formatTime(booking.startsAt.getTime(), locale, timeZone)}
+                    </span>
+                    <span className="truncate">{booking.customerName}</span>
                   </li>
                 ))}
                 {items.length > MAX_PER_DAY ? (
-                  <li className="px-1 text-[11px] text-muted">{t("more", { count: items.length - MAX_PER_DAY })}</li>
+                  <li className="px-1 text-[11px] font-medium text-primary">{t("more", { count: items.length - MAX_PER_DAY })}</li>
                 ) : null}
               </ul>
+              {/* Phones: one dot per booking instead of the list. */}
+              <span className="mt-1.5 flex flex-wrap gap-0.5 sm:hidden" aria-hidden>
+                {items.slice(0, 6).map((booking) => (
+                  <span key={booking.id} className={cn("size-1.5 rounded-full", STATUS_DOT[effectiveStatus(booking, now)])} />
+                ))}
+              </span>
             </Link>
           );
         })}

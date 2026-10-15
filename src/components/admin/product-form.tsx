@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { saveProduct } from "@/actions/products";
 import { ActionForm, SubmitButton } from "@/components/ui/action-form";
-import { Checkbox, InputField } from "@/components/ui/field";
+import { InputField, Switch, SwitchList } from "@/components/ui/field";
 import type { Product } from "@/db/schema";
 import { moneyInputValue } from "@/lib/money";
 import { BilingualFields } from "./bilingual-fields";
@@ -10,7 +10,7 @@ export function ProductForm({ product }: { product?: Product }) {
   const t = useTranslations("admin.products");
   const tc = useTranslations("common");
   return (
-    <ActionForm action={saveProduct}>
+    <ActionForm action={saveProduct} className="space-y-5">
       {product ? <input type="hidden" name="id" value={product.id} /> : null}
       <BilingualFields name="name" label={t("name")} defaults={{ en: product?.nameEn, ar: product?.nameAr }} />
       <BilingualFields
@@ -26,12 +26,12 @@ export function ProductForm({ product }: { product?: Product }) {
         inputMode="decimal"
         hint={t("priceHint")}
         defaultValue={moneyInputValue(product?.price)}
-        className="max-w-48"
+        className="max-w-56"
       />
-      <div className="flex flex-wrap gap-6">
-        <Checkbox name="isVisible" label={t("visible")} defaultChecked={product?.isVisible ?? true} />
-        <Checkbox name="inStock" label={t("inStock")} defaultChecked={product?.inStock ?? true} />
-      </div>
+      <SwitchList>
+        <Switch name="isVisible" label={t("visible")} defaultChecked={product?.isVisible ?? true} />
+        <Switch name="inStock" label={t("inStock")} hint={t("inStockHint")} defaultChecked={product?.inStock ?? true} />
+      </SwitchList>
       <SubmitButton>{tc("save")}</SubmitButton>
     </ActionForm>
   );

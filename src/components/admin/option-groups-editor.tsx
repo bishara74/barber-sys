@@ -2,7 +2,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { deleteOption, deleteOptionGroup, saveOption, saveOptionGroup } from "@/actions/catalog";
 import { ActionForm, SubmitButton } from "@/components/ui/action-form";
-import { Checkbox, InputField, SelectField } from "@/components/ui/field";
+import { InputField, SelectField, Switch } from "@/components/ui/field";
 import type { Option } from "@/db/schema";
 import type { CatalogGroup } from "@/lib/catalog";
 import { moneyInputValue } from "@/lib/money";
@@ -17,25 +17,25 @@ export function OptionGroupsEditor({ serviceId, groups }: { serviceId: number; g
   return (
     <div className="space-y-4">
       {groups.map((group, index) => (
-        <div key={group.id} className="space-y-4 rounded-theme border border-border p-3 sm:p-4">
-          <div className="flex items-start gap-2">
+        <div key={group.id} className="overflow-hidden rounded-theme border border-border bg-card shadow-xs">
+          <div className="flex items-start gap-2 bg-surface p-3 sm:p-4">
             <GroupForm serviceId={serviceId} group={group} />
             <div className="flex flex-col items-center">
-              <MoveButtons list="optionGroup" id={group.id} isFirst={index === 0} isLast={index === groups.length - 1} />
+              <MoveButtons list="optionGroup" id={group.id} isFirst={index === 0} isLast={index === groups.length - 1} vertical />
               <form action={deleteOptionGroup}>
                 <input type="hidden" name="id" value={group.id} />
-                <SubmitButton variant="ghost" size="icon" aria-label={t("deleteGroup")} confirm={tc("confirmDelete")}>
+                <SubmitButton variant="danger-ghost" size="icon-sm" aria-label={t("deleteGroup")} confirm={tc("confirmDelete")}>
                   <Trash2 className="size-4" />
                 </SubmitButton>
               </form>
             </div>
           </div>
 
-          <ul className="space-y-2 border-t border-border pt-3">
+          <ul className="space-y-3 border-t border-border p-3 sm:p-4">
             {group.options.map((option, optionIndex) => (
-              <li key={option.id} className="flex items-start gap-2">
+              <li key={option.id} className="flex items-end gap-2">
                 <OptionForm groupId={group.id} option={option} />
-                <div className="flex items-center">
+                <div className="flex items-center pb-1">
                   <MoveButtons
                     list="option"
                     id={option.id}
@@ -44,21 +44,23 @@ export function OptionGroupsEditor({ serviceId, groups }: { serviceId: number; g
                   />
                   <form action={deleteOption}>
                     <input type="hidden" name="id" value={option.id} />
-                    <SubmitButton variant="ghost" size="icon" aria-label={tc("delete")} confirm={tc("confirmDelete")}>
+                    <SubmitButton variant="danger-ghost" size="icon-sm" aria-label={tc("delete")} confirm={tc("confirmDelete")}>
                       <Trash2 className="size-4" />
                     </SubmitButton>
                   </form>
                 </div>
               </li>
             ))}
-            <li>
+            <li className="rounded-theme border-2 border-dashed border-border p-3">
+              <p className="mb-2 text-xs font-semibold text-muted">{t("addOption")}</p>
               <OptionForm groupId={group.id} />
             </li>
           </ul>
         </div>
       ))}
 
-      <div className="rounded-theme border border-dashed border-border p-3 sm:p-4">
+      <div className="rounded-theme border-2 border-dashed border-border p-3 sm:p-4">
+        <p className="mb-3 text-sm font-semibold">{t("addGroup")}</p>
         <GroupForm serviceId={serviceId} />
       </div>
     </div>
@@ -82,9 +84,10 @@ function GroupForm({ serviceId, group }: { serviceId: number; group?: CatalogGro
             { value: "multiple", label: t("selectionMultiple") },
             { value: "single", label: t("selectionSingle") },
           ]}
+          className="min-w-40"
         />
-        <Checkbox name="isRequired" label={t("groupRequired")} defaultChecked={group?.isRequired ?? false} className="pb-2.5" />
-        <SubmitButton variant={group ? "outline" : "secondary"} size="sm" className="mb-1">
+        <Switch name="isRequired" label={t("groupRequired")} defaultChecked={group?.isRequired ?? false} inline className="pb-3" />
+        <SubmitButton variant={group ? "outline" : "secondary"} size="sm" className="mb-1 ms-auto">
           {group ? (
             tc("save")
           ) : (
@@ -125,7 +128,7 @@ function OptionForm({ groupId, option }: { groupId: number; option?: Option }) {
         step={5}
         defaultValue={option?.durationDelta ?? 0}
       />
-      <SubmitButton variant={option ? "outline" : "secondary"} size="sm" className="mb-1">
+      <SubmitButton variant={option ? "outline" : "secondary"} size="sm" className="col-span-2 mb-1 sm:col-span-1">
         {option ? tc("save") : <Plus className="size-4" aria-label={t("addOption")} />}
       </SubmitButton>
     </ActionForm>

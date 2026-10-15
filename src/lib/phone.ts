@@ -24,7 +24,8 @@ export function displayPhone(digits: string): string {
   return digits ? `+${digits}` : "";
 }
 
-/** A wa.me link with a pre-filled message. */
+/** A wa.me link, with a pre-filled message when there is one. */
 export function whatsappLink(phoneDigits: string, text: string): string {
-  return `https://wa.me/${phoneDigits.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+  const chat = `https://wa.me/${phoneDigits.replace(/\D/g, "")}`;
+  return text ? `${chat}?text=${encodeURIComponent(text)}` : chat;
 }

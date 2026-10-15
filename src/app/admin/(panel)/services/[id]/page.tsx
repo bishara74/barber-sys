@@ -1,8 +1,9 @@
-import { Archive } from "lucide-react";
+import { Archive, Layers, Pencil, Trash2 } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { deleteService, setServiceArchived } from "@/actions/catalog";
+import { BackLink } from "@/components/admin/back-link";
 import { OptionGroupsEditor } from "@/components/admin/option-groups-editor";
 import { ServiceForm } from "@/components/admin/service-form";
 import { ActionForm, SubmitButton } from "@/components/ui/action-form";
@@ -33,6 +34,7 @@ export default async function EditServicePage({ params }: PageProps<"/admin/serv
   return (
     <>
       <PageHeader
+        back={<BackLink href="/admin/services" label={t("title")} />}
         title={localized(locale, service.nameEn, service.nameAr)}
         actions={
           <>
@@ -46,7 +48,8 @@ export default async function EditServicePage({ params }: PageProps<"/admin/serv
             </form>
             <ActionForm action={deleteService} className="space-y-1">
               <input type="hidden" name="id" value={service.id} />
-              <SubmitButton variant="outline" size="sm" className="text-red-600" confirm={tc("confirmDelete")}>
+              <SubmitButton variant="danger-ghost" size="sm" confirm={tc("confirmDelete")}>
+                <Trash2 className="size-4" aria-hidden />
                 {tc("delete")}
               </SubmitButton>
             </ActionForm>
@@ -54,7 +57,7 @@ export default async function EditServicePage({ params }: PageProps<"/admin/serv
         }
       />
       <div className="space-y-5">
-        <Section title={t("editService")}>
+        <Section title={t("editService")} icon={Pencil}>
           <ServiceForm
             service={service}
             types={catalog.map((type) => ({ id: type.id, name: localized(locale, type.nameEn, type.nameAr) }))}
@@ -64,7 +67,7 @@ export default async function EditServicePage({ params }: PageProps<"/admin/serv
             assignedStaffIds={assigned}
           />
         </Section>
-        <Section title={t("optionGroups")} description={t("optionGroupsHint")}>
+        <Section title={t("optionGroups")} icon={Layers} description={t("optionGroupsHint")}>
           <OptionGroupsEditor serviceId={service.id} groups={service.groups} />
         </Section>
       </div>

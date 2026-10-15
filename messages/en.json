@@ -19,7 +19,9 @@
     "arabic": "Arabic",
     "switchLanguage": "العربية",
     "confirmDelete": "Delete this? This cannot be undone.",
-    "none": "None"
+    "none": "None",
+    "upload": "Upload",
+    "clear": "Clear"
   },
   "forms": {
     "saved": "Saved.",
@@ -75,7 +77,19 @@
     "onlineBookingOff": "Call to book",
     "askOnWhatsApp": "Ask on WhatsApp",
     "productMessage": "Hi! I'm interested in {name}.",
-    "allProducts": "All products"
+    "allProducts": "All products",
+    "openNow": "Open now · until {time}",
+    "closedNow": "Closed now",
+    "opensToday": "Closed · opens at {time}",
+    "opensTomorrow": "Closed · opens tomorrow at {time}",
+    "opensOn": "Closed · opens {day} at {time}",
+    "directions": "Directions",
+    "call": "Call",
+    "visit": "Hours & location",
+    "today": "Today",
+    "social": "Social links",
+    "bookShort": "Book",
+    "inStock": "In stock"
   },
   "booking": {
     "title": "Book an appointment",
@@ -108,7 +122,14 @@
     "when": "When",
     "submit": "Book now",
     "approvalNote": "The shop will confirm your booking.",
-    "nothingToBook": "Online booking isn't available yet. Please contact the shop."
+    "nothingToBook": "Online booking isn't available yet. Please contact the shop.",
+    "stepOf": "Step {current} of {total}",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "tryDay": "Try {day}"
   },
   "manage": {
     "title": "Your booking",
@@ -151,13 +172,22 @@
       "account": "Account",
       "logout": "Log out",
       "viewSite": "View page",
-      "menu": "Menu"
+      "menu": "Menu",
+      "groupDaily": "Daily",
+      "groupShop": "Your shop",
+      "groupAdmin": "Admin",
+      "roleOwner": "Owner",
+      "roleStaff": "Staff",
+      "more": "More",
+      "close": "Close"
     },
     "login": {
       "title": "Shop login",
       "email": "Email",
       "password": "Password",
-      "submit": "Log in"
+      "submit": "Log in",
+      "subtitle": "Welcome back! Log in to manage your bookings.",
+      "backToSite": "Back to the page"
     },
     "dashboard": {
       "title": "Today",
@@ -171,7 +201,20 @@
       "blockTime": "Block time",
       "yourLink": "Your booking page",
       "copy": "Copy link",
-      "copied": "Copied"
+      "copied": "Copied",
+      "greetingMorning": "Good morning, {name}",
+      "greetingAfternoon": "Good afternoon, {name}",
+      "greetingEvening": "Good evening, {name}",
+      "hoursMinutes": "{hours} h {minutes} min",
+      "doneCount": "{count} completed",
+      "allClear": "All caught up",
+      "inProgress": "In the chair now",
+      "nextUp": "Next up",
+      "endsIn": "ends in {time}",
+      "startsIn": "in {time}",
+      "noMoreToday": "No more appointments today.",
+      "open": "Open",
+      "yourLinkHint": "Share it in your bio, on WhatsApp or as a QR code at the shop."
     },
     "calendar": {
       "day": "Day",
@@ -223,7 +266,13 @@
       "create": "Add booking",
       "viewCustomer": "Customer history",
       "selectService": "Choose a service",
-      "nothingToBook": "Add a service and a staff member first."
+      "nothingToBook": "Add a service and a staff member first.",
+      "rescheduleHint": "Pick another person or time. A move that overlaps another booking is refused.",
+      "call": "Call",
+      "messageHint": "Opens WhatsApp with the text ready. Check it and press send.",
+      "send": "Send on WhatsApp",
+      "walkInHint": "Starts now and keeps the chair blocked, so nobody books over it online.",
+      "newHint": "For phone calls and messages. Shop bookings are confirmed right away."
     },
     "timeOff": {
       "title": "Time off",
@@ -280,7 +329,16 @@
       "optionName": "Option",
       "extraPrice": "Extra price",
       "extraTime": "Extra minutes",
-      "deleteGroup": "Delete group"
+      "deleteGroup": "Delete group",
+      "pageHint": "What customers can book, with prices and times. Tap a service to edit it.",
+      "durationShort": "Duration",
+      "optionsCount": "{count, plural, one {# option group} other {# option groups}}",
+      "archivedHint": "Hidden from customers but kept in the booking history.",
+      "groupBasics": "Name and description",
+      "groupPricing": "Price and time",
+      "groupVisibility": "Visibility",
+      "priceIsFromHint": "For prices that vary, e.g. \"from ₪150\".",
+      "visibleHint": "Off hides it everywhere for customers. You can still book it from here."
     },
     "products": {
       "title": "Products",
@@ -298,7 +356,15 @@
       "images": "Photos",
       "addImages": "Add photos",
       "uploadImages": "Upload",
-      "noImages": "No photos yet."
+      "noImages": "No photos yet.",
+      "pageHint": "Shown on your page with photos. Customers ask about them on WhatsApp.",
+      "photosAfterSave": "You can add photos after saving.",
+      "photoCount": "{count, plural, =0 {No photos} one {# photo} other {# photos}}",
+      "shown": "Shown",
+      "status": "Status",
+      "inStockHint": "Off shows \"Out of stock\" instead of the price.",
+      "imagesHint": "The first photo is the cover. Use the arrows to reorder.",
+      "cover": "Cover"
     },
     "profile": {
       "title": "Page & links",
@@ -324,7 +390,17 @@
       "label": "Label",
       "linkUrl": "Link",
       "addButton": "Add button",
-      "visible": "Show on the page"
+      "visible": "Show on the page",
+      "pageHint": "Everything customers see on your page: name, photos, links and colors.",
+      "openPage": "Open my page",
+      "contact": "Contact and location",
+      "images": "Logo, icon and cover",
+      "imagesHint": "Photos are resized on your phone before uploading, so they upload fast.",
+      "avatarHint": "Square works best. Shown round at the top of your page.",
+      "coverHint": "A wide photo at the top of your page, e.g. your shop or your work.",
+      "favicon": "Browser tab icon",
+      "faviconHint": "The small icon in browser tabs and bookmarks. A square image, cropped to the middle. Without one, your logo is used.",
+      "tabPreview": "How it looks in a browser tab."
     },
     "design": {
       "title": "Design",
@@ -362,7 +438,15 @@
       "addShift": "Add shift",
       "dayOff": "Day off",
       "noStaff": "No staff yet.",
-      "deleteHint": "People with bookings can't be deleted. Turn off \"Taking bookings\" instead."
+      "deleteHint": "People with bookings can't be deleted. Turn off \"Taking bookings\" instead.",
+      "pageHint": "Everyone customers can book. Tap a person to set their services and hours.",
+      "servicesCount": "{count, plural, =0 {No services} one {# service} other {# services}}",
+      "addHint": "They get every service and the same hours as the first colleague. Adjust after adding.",
+      "profile": "Profile",
+      "activeHint": "Turn off when someone leaves or is away for a long time.",
+      "from": "from",
+      "to": "to",
+      "removePhoto": "Remove photo"
     },
     "customers": {
       "title": "Customers",
@@ -378,7 +462,17 @@
       "deleteCustomer": "Delete customer",
       "deleteHint": "Removes their name and phone from all bookings.",
       "deleteConfirm": "Delete this customer and anonymize their bookings?",
-      "deletedName": "Deleted customer"
+      "deletedName": "Deleted customer",
+      "resultCount": "{count, plural, =0 {No customers} one {# customer} other {# customers}}",
+      "noResults": "No customer matches this search.",
+      "call": "Call",
+      "upcoming": "Upcoming",
+      "noShows": "No-shows",
+      "date": "Date",
+      "service": "Service",
+      "status": "Status",
+      "details": "Details and notes",
+      "notesPlaceholder": "Preferences, allergies, anything to remember"
     },
     "settings": {
       "title": "Settings",
@@ -404,7 +498,13 @@
       "phoneCountryCode": "Phone country code",
       "phoneCountryCodeHint": "Added to local numbers like 059…, e.g. 970 or 972.",
       "currency": "Currency code",
-      "currencyHint": "e.g. ILS, JOD, USD"
+      "currencyHint": "e.g. ILS, JOD, USD",
+      "pageHint": "How online booking works for your shop. Changes apply right away.",
+      "modeApprovalHint": "New bookings wait for you. Their time is held until you approve or decline.",
+      "modeInstantHint": "New bookings are confirmed right away, with no action needed from you.",
+      "allowStaffChoiceHint": "Off: whoever is free and least busy gets the booking.",
+      "fixedSlotHint": "Only used with a fixed slot length.",
+      "minNoticeHint": "e.g. 60 = customers can't book less than an hour ahead."
     },
     "users": {
       "title": "Users",
@@ -419,13 +519,17 @@
       "staff": "Staff (own calendar only)",
       "staffProfile": "Staff profile",
       "newPassword": "New password",
-      "you": "You"
+      "you": "You",
+      "editHint": "Tap a person to change their role, staff profile or password.",
+      "keepPassword": "Leave empty to keep it"
     },
     "account": {
       "title": "Account",
       "changePassword": "Change password",
       "currentPassword": "Current password",
-      "newPassword": "New password"
+      "newPassword": "New password",
+      "profile": "Your account",
+      "passwordHint": "At least 8 characters."
     }
   }
 }

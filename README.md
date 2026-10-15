@@ -12,7 +12,7 @@ Each client gets their own deployment on Cloudflare, with their own database, ph
 ## Features
 
 - **Public page** in the style of a link in bio: cover, logo, social icons, link buttons, services and prices,
-  products with photos, opening hours.
+  products with photos, opening hours with an "open now" status, and one-tap directions, call and WhatsApp.
 - **Booking** in five short steps: service, options (add-ons with extra price and time), person or "anyone",
   day and time, name and phone. Confirmation link to reschedule, cancel, add to calendar or message the shop on WhatsApp.
 - **Availability engine**: working hours with breaks, time off, buffers, minimum notice, booking horizon, fixed or
@@ -22,7 +22,10 @@ Each client gets their own deployment on Cloudflare, with their own database, ph
   status changes, ready-made WhatsApp messages, time off, services with option groups, products with photos,
   page and links, staff and hours, customers with history, settings, owner and staff logins.
 - **Arabic (RTL) and English** throughout, with a language switch.
-- **Per-client design** picked by the owner in the dashboard: six theme presets plus color overrides, with a live preview.
+- **Per-client design** picked by the owner in the dashboard: six theme presets plus color overrides, with a live preview,
+  and the shop's own browser tab icon (favicon).
+- **Mobile-first interface** with light, CSS-only motion: fade-ins, a parallax cover and a compact header on scroll,
+  all switched off for people who prefer reduced motion. A bottom tab bar in the dashboard on phones.
 
 ## Stack
 
@@ -41,14 +44,13 @@ Each client gets their own deployment on Cloudflare, with their own database, ph
 
 ```bash
 npm install
-cp .dev.vars.example .dev.vars
-npm run db:migrate:local
-npm run db:seed:local
-npm run owner:local -- --email owner@example.com --name "Demo Owner" --password local-dev-only
+npm run setup:local
 npm run dev
 ```
 
-Open <http://localhost:3000> and <http://localhost:3000/admin>.
+`setup:local` creates `.dev.vars`, the local database, a demo shop with customers and bookings around today, and a
+login. Open <http://localhost:3000> and <http://localhost:3000/admin> (`owner@example.com` / `local-dev-only`).
+`npm run reset:local` starts over from a fresh demo. See [Run it locally](docs/setup.md#run-it-locally).
 
 ## Docs
 

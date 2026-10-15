@@ -15,7 +15,7 @@ export function StaffFilter({ staff, value }: StaffFilterProps) {
   return (
     <Select
       aria-label={t("allStaff")}
-      className="w-auto"
+      className="w-auto min-w-36"
       value={value ?? ""}
       onChange={(event) => {
         const params = new URLSearchParams(searchParams);

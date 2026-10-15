@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Plus } from "lucide-react";
+import { BackLink } from "@/components/admin/back-link";
 import { ServiceForm } from "@/components/admin/service-form";
 import { PageHeader, Section } from "@/components/ui/card";
 import { localized } from "@/i18n/locales";
@@ -25,8 +27,8 @@ export default async function NewServicePage({ searchParams }: PageProps<"/admin
 
   return (
     <>
-      <PageHeader title={t("newService")} />
-      <Section title={t("newService")}>
+      <PageHeader back={<BackLink href="/admin/services" label={t("title")} />} title={t("newService")} />
+      <Section title={t("newService")} icon={Plus} className="max-w-3xl">
         <ServiceForm
           typeId={Number(query.type) || catalog[0].id}
           types={catalog.map((type) => ({ id: type.id, name: localized(locale, type.nameEn, type.nameAr) }))}

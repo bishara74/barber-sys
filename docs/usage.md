@@ -32,6 +32,9 @@ For shop owners and staff. For installing and deploying, see [setup.md](setup.md
 Put the public page address in your Instagram/TikTok bio and on a QR code at the shop.
 The **Today** screen of the dashboard shows the link with a **Copy link** button.
 
+On a phone, the dashboard has a bar at the bottom: **Today**, **Calendar**, the round **+** button for a new booking,
+**Customers**, and **More** for everything else. On a computer, the same pages are in the menu on the side.
+
 ---
 
 ## First-time setup
@@ -39,7 +42,7 @@ The **Today** screen of the dashboard shows the link with a **Copy link** button
 Do these once, in this order:
 
 1. **Page & links**: shop name, tagline, about text, address, Google Maps link, phone, **WhatsApp number**,
-   logo and cover photo. Add social icons (Instagram, TikTok…) and link buttons.
+   logo, browser tab icon and cover photo. Add social icons (Instagram, TikTok…) and link buttons.
 2. **Services**: create your **service types** first (e.g. *Barbershop*, *Tattoo*), then the services under each
    type with price and duration. Add options where needed (see below).
 3. **Staff**: add each person who takes appointments, set their **working hours**, and tick the services they do.
@@ -54,7 +57,9 @@ Texts can be filled in **English and Arabic**. If one language is empty, the oth
 
 ## What customers see
 
-1. **Public page** with your branding, links, services and prices, products and opening hours.
+1. **Public page** with your branding, links, services and prices, products and opening hours. Under your name it
+   says whether you're **open now** (and until when) or when you open next, and at the bottom there are buttons for
+   **Directions**, **Call** and **WhatsApp**.
 2. **Book an appointment**:
    1. Choose a service (grouped by type).
    2. Choose options, if the service has any. The price and duration update live.
@@ -77,9 +82,13 @@ If you use **approval mode**, the customer sees *"Waiting for the shop to confir
 
 Open **Today** (the first page after login):
 
+- Counters at the top: **today's appointments** (and how many are done), **waiting for approval**, and the
+  **next 7 days**.
+- **Next up**: the next appointment and how long until it starts. While someone is in the chair it shows
+  **In the chair now** with a progress bar.
 - **Waiting for approval**: new online bookings in approval mode. Tap **Approve** or **Decline**.
-- **Today's appointments**: everything booked today, in time order. Tap one to open it.
-- **Next 7 days**: how many bookings are coming up.
+- **Today's appointments**: everything booked today on a timeline, in time order. Finished ones are faded.
+  Tap one to open it.
 - Quick buttons: **New booking**, **Walk-in**, **Block time**.
 
 ### A customer walks in
@@ -107,7 +116,7 @@ history accurate.
 - **Week**: one column per day.
 - **Month**: an overview; tap a day to open it.
 
-Colors:
+Colors (also explained in the small legend above the calendar):
 
 | Look | Meaning |
 |---|---|
@@ -117,8 +126,9 @@ Colors:
 | Red | No-show |
 | Striped grey | Time off / blocked |
 
-Tap an empty hour to add a booking at that time. Tap a booking to open it.
+Tap an empty hour (a **+** appears when you point at it) to add a booking at that time. Tap a booking to open it.
 Use the **All staff** filter next to the date to show one person only. The red line marks the current time.
+On a small screen the week scrolls sideways and opens on today.
 
 ---
 
@@ -211,7 +221,13 @@ order. There is no online checkout.
 
 - **Shop info**: name, tagline, about text, address, Google Maps link, phone and **WhatsApp number**.
   Customers send booking confirmations to the WhatsApp number, so make sure it's right.
-- **Logo** (round) and **Cover photo** (wide, at the top of the page).
+- **Logo** (round) and **Cover photo** (wide, at the top of the page). Without a cover, the top of your page is drawn
+  in your main color.
+- **Browser tab icon** (favicon): the small picture in browser tabs and bookmarks, and on the home screen when someone
+  saves your page. Upload a square image; it is cropped to the middle and resized for you. The preview shows how the
+  tab will look. Without one, your logo is used, and without a logo, your shop's first letter in your main color.
+- The **Save** button for these sections stays at the bottom of the screen while you scroll, and shows **Saved.**
+  next to it.
 - **Social icons**: pick a platform and enter a link, an @handle, a phone number or an email.
   Platforms: Instagram, TikTok, Facebook, Snapchat, WhatsApp, YouTube, X, Telegram, Threads, phone, email, maps, website.
 - **Link buttons**: big buttons under the booking button (e.g. "See our latest cuts", "Price list", "Gift cards").
@@ -234,8 +250,9 @@ you save. After **Save**, your public page and the dashboard use the new look ri
 - **Taking bookings**: turn off when someone leaves or is away for a long time. People with past bookings can't be
   deleted, only turned off.
 - **Services** they do.
-- **Working hours** for each weekday. Add **two shifts** on one day for a break, e.g. 09:00–13:00 and 14:00–20:00.
-  Days without shifts are days off.
+- **Working hours** for each weekday. Each day has a switch: turn it on to work that day (it starts with the hours
+  of the day before), off for a day off. Add **two shifts** on one day for a break, e.g. 09:00–13:00 and
+  14:00–20:00.
 
 The public page's **Opening hours** combine everyone's working hours.
 

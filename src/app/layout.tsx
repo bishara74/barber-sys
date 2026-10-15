@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import { localeDirection, localized } from "@/i18n/locales";
-import { getDesign, getProfile } from "@/lib/config";
+import { brandIconUrl, getDesign, getProfile, type Design, type Profile } from "@/lib/config";
 import { requestOrigin } from "@/lib/request";
 import { resolveTheme, themeCss } from "@/lib/theme";
 import { mediaUrl } from "@/lib/utils";
@@ -23,7 +23,12 @@ async function currentTheme() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [locale, profile, origin] = await Promise.all([getLocale(), getProfile(), requestOrigin()]);
+  const [locale, profile, design, origin] = await Promise.all([
+    getLocale(),
+    getProfile(),
+    getDesign(),
+    requestOrigin(),
+  ]);
   const name = localized(locale, profile.nameEn, profile.nameAr) || "Booking";
   const description = localized(locale, profile.taglineEn, profile.taglineAr) || undefined;
   const image = profile.coverKey || profile.avatarKey;
@@ -32,9 +37,16 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(origin),
     title: { default: name, template: `%s · ${name}` },
     description,
-    icons: profile.avatarKey ? { icon: mediaUrl(profile.avatarKey) } : undefined,
+    icons: shopIcon(profile, design),
     openGraph: { title: name, description, images: image ? [mediaUrl(image)] : undefined },
   };
+}
+
+/** The browser tab and home screen icon: the shop's own icon, else its logo, else its initial. */
+function shopIcon(profile: Profile, design: Design): Metadata["icons"] {
+  const key = profile.faviconKey || profile.avatarKey;
+  if (key) return { icon: mediaUrl(key), apple: mediaUrl(key) };
+  return { icon: { url: brandIconUrl(profile, design), type: "image/svg+xml" } };
 }
 
 export async function generateViewport(): Promise<Viewport> {
@@ -49,6 +61,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang={locale}
       dir={localeDirection(locale)}
       data-scheme={theme.scheme}
+      // Smooth scrolling for in-page links; Next.js turns it off while switching pages.
+      data-scroll-behavior="smooth"
       className={`${font.variable} h-full antialiased`}
     >
       <head>

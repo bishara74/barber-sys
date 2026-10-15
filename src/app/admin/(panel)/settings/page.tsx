@@ -1,9 +1,10 @@
+import { CalendarCheck, Clock3, Globe2, Hourglass, ShieldCheck, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { saveSettings } from "@/actions/settings";
-import { ActionForm, SubmitButton } from "@/components/ui/action-form";
+import { ActionForm, StickySave, SubmitButton } from "@/components/ui/action-form";
 import { PageHeader, Section } from "@/components/ui/card";
-import { Checkbox, InputField, SelectField } from "@/components/ui/field";
+import { InputField, RadioCards, SelectField, Switch, SwitchList } from "@/components/ui/field";
 import { requireOwner } from "@/lib/auth";
 import { getSettings, SLOT_STEPS } from "@/lib/config";
 
@@ -33,6 +34,7 @@ export default async function SettingsPage() {
       label={t(name)}
       name={name}
       type="number"
+      inputMode="numeric"
       min={min}
       max={max}
       required
@@ -43,34 +45,43 @@ export default async function SettingsPage() {
 
   return (
     <>
-      <PageHeader title={t("title")} />
-      <ActionForm action={saveSettings} className="space-y-5">
-        <Section title={t("booking")}>
-          <SelectField
-            label={t("bookingMode")}
+      <PageHeader title={t("title")} description={t("pageHint")} />
+      <ActionForm action={saveSettings} showMessage={false} className="max-w-4xl space-y-5">
+        <Section title={t("booking")} icon={CalendarCheck}>
+          <RadioCards
             name="bookingMode"
+            legend={t("bookingMode")}
             defaultValue={settings.bookingMode}
             options={[
-              { value: "approval", label: t("modeApproval") },
-              { value: "instant", label: t("modeInstant") },
-            ]}
-          />
-          {number("pendingExpiryHours", 1, 168, t("pendingExpiryHint"))}
-          <Checkbox name="allowStaffChoice" label={t("allowStaffChoice")} defaultChecked={settings.allowStaffChoice} />
-        </Section>
-
-        <Section title={t("slots")}>
-          <SelectField
-            label={t("slotMode")}
-            name="slotMode"
-            defaultValue={settings.slotMode}
-            options={[
-              { value: "service", label: t("slotModeService") },
-              { value: "fixed", label: t("slotModeFixed") },
+              { value: "approval", label: t("modeApproval"), hint: t("modeApprovalHint"), icon: <ShieldCheck /> },
+              { value: "instant", label: t("modeInstant"), hint: t("modeInstantHint"), icon: <Zap /> },
             ]}
           />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {number("fixedSlotMin", 5, 240)}
+            {number("pendingExpiryHours", 1, 168, t("pendingExpiryHint"))}
+          </div>
+          <SwitchList>
+            <Switch
+              name="allowStaffChoice"
+              label={t("allowStaffChoice")}
+              hint={t("allowStaffChoiceHint")}
+              defaultChecked={settings.allowStaffChoice}
+            />
+          </SwitchList>
+        </Section>
+
+        <Section title={t("slots")} icon={Clock3}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <SelectField
+              label={t("slotMode")}
+              name="slotMode"
+              defaultValue={settings.slotMode}
+              options={[
+                { value: "service", label: t("slotModeService") },
+                { value: "fixed", label: t("slotModeFixed") },
+              ]}
+            />
+            {number("fixedSlotMin", 5, 240, t("fixedSlotHint"))}
             <SelectField
               label={t("slotStepMin")}
               name="slotStepMin"
@@ -80,16 +91,16 @@ export default async function SettingsPage() {
           </div>
         </Section>
 
-        <Section title={t("limits")}>
+        <Section title={t("limits")} icon={Hourglass}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {number("minNoticeMin", 0, 10080)}
+            {number("minNoticeMin", 0, 10080, t("minNoticeHint"))}
             {number("maxDaysAhead", 1, 365)}
             {number("cancelWindowHours", 0, 168)}
             {number("maxActiveBookingsPerPhone", 1, 20)}
           </div>
         </Section>
 
-        <Section title={t("regional")}>
+        <Section title={t("regional")} icon={Globe2}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <InputField
               label={t("phoneCountryCode")}
@@ -108,11 +119,14 @@ export default async function SettingsPage() {
               dir="ltr"
               hint={t("currencyHint")}
               defaultValue={settings.currency}
+              className="[&_input]:uppercase"
             />
           </div>
         </Section>
 
-        <SubmitButton>{tc("save")}</SubmitButton>
+        <StickySave>
+          <SubmitButton>{tc("save")}</SubmitButton>
+        </StickySave>
       </ActionForm>
     </>
   );

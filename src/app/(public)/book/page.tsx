@@ -28,22 +28,24 @@ export default async function BookPage({ searchParams }: PageProps<"/book">) {
   const requested = Number(query.service);
 
   return (
-    <main className="mx-auto min-h-screen max-w-lg px-4">
-      <BookingWizard
-        types={catalogView(catalog, locale)}
-        staff={staff.map((member) => ({
-          id: member.id,
-          name: member.name,
-          avatarUrl: member.avatarKey ? mediaUrl(member.avatarKey) : null,
-        }))}
-        allowStaffChoice={settings.allowStaffChoice}
-        approvalMode={settings.bookingMode === "approval"}
-        currency={settings.currency}
-        timeZone={timeZone}
-        turnstileSiteKey={turnstileSiteKey}
-        days={days}
-        initialServiceId={Number.isInteger(requested) ? requested : null}
-      />
+    <main className="page-glow min-h-screen px-4">
+      <div className="mx-auto max-w-xl">
+        <BookingWizard
+          types={catalogView(catalog, locale)}
+          staff={staff.map((member) => ({
+            id: member.id,
+            name: member.name,
+            avatarUrl: member.avatarKey ? mediaUrl(member.avatarKey) : null,
+          }))}
+          allowStaffChoice={settings.allowStaffChoice}
+          approvalMode={settings.bookingMode === "approval"}
+          currency={settings.currency}
+          timeZone={timeZone}
+          turnstileSiteKey={turnstileSiteKey}
+          days={days}
+          initialServiceId={Number.isInteger(requested) ? requested : null}
+        />
+      </div>
     </main>
   );
 }

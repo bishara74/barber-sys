@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ShopBookingForm } from "@/components/admin/shop-booking-form";
+import { CalendarPlus, Footprints } from "lucide-react";
 import { EmptyState, PageHeader } from "@/components/ui/card";
 import { canManageStaffBookings, requireUser } from "@/lib/auth";
 import { getActiveStaff, getCatalog } from "@/lib/catalog";
@@ -41,9 +42,17 @@ export default async function NewBookingPage({ searchParams }: PageProps<"/admin
 
   return (
     <>
-      <PageHeader title={walkIn ? t("walkInTitle") : t("newTitle")} />
+      <PageHeader
+        leading={
+          <span className="flex size-11 items-center justify-center rounded-theme bg-primary-soft text-primary">
+            {walkIn ? <Footprints className="size-5" aria-hidden /> : <CalendarPlus className="size-5" aria-hidden />}
+          </span>
+        }
+        title={walkIn ? t("walkInTitle") : t("newTitle")}
+        description={walkIn ? t("walkInHint") : t("newHint")}
+      />
       {types.length === 0 || staff.length === 0 ? (
-        <EmptyState>{t("nothingToBook")}</EmptyState>
+        <EmptyState icon={CalendarPlus}>{t("nothingToBook")}</EmptyState>
       ) : (
         <ShopBookingForm
           types={types}

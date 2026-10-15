@@ -23,6 +23,10 @@ describe("normalizePhone", () => {
   it("builds wa.me links with an encoded message", () => {
     expect(whatsappLink("970591234567", "Hi & bye")).toBe("https://wa.me/970591234567?text=Hi%20%26%20bye");
   });
+
+  it("opens a plain chat when there is no message", () => {
+    expect(whatsappLink("970591234567", "")).toBe("https://wa.me/970591234567");
+  });
 });
 
 describe("parseMoney", () => {

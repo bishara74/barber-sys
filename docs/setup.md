@@ -55,33 +55,41 @@ A Cloudflare cron trigger runs every 15 minutes to mark unapproved bookings as e
 git clone <repo-url> barber-sys
 cd barber-sys
 npm install
-cp .dev.vars.example .dev.vars
-```
-
-Create the local database, add demo content and create a login:
-
-```bash
-npm run db:migrate:local
-npm run db:seed:local
-npm run owner:local -- --email owner@example.com --name "Demo Owner" --password local-dev-only
-```
-
-Start the dev server:
-
-```bash
+npm run setup:local
 npm run dev
 ```
 
+`npm run setup:local` does everything a fresh checkout needs, in one step:
+
+1. copies `.dev.vars.example` to `.dev.vars` (if there is none yet),
+2. creates the local database and applies the migrations,
+3. adds the demo shop (if the database is empty),
+4. creates the local owner login: **`owner@example.com`** with password **`local-dev-only`**.
+
+It is safe to run again: existing data is kept. Then open:
+
 - Public page: <http://localhost:3000>
 - Booking: <http://localhost:3000/book>
-- Dashboard: <http://localhost:3000/admin> (log in with the account you just created)
+- Dashboard: <http://localhost:3000/admin>
 
 `npm run dev` runs Next.js with local versions of the Cloudflare bindings (D1, R2), stored in `.wrangler/state`.
-Delete that folder to start over with an empty database.
 
-The demo seed creates a shop called "Abu Ali Barbershop" with two service types (Barbershop, Tattoo),
-services with options, two staff members with working hours, links and products.
-Skip `db:seed:local` if you want to start empty.
+### Demo data
+
+The demo shop is "Abu Ali Barbershop" with two service types (Barbershop, Tattoo), services with options, two staff
+members with working hours, links, products, and six customers with about twenty bookings spread around today:
+past visits (completed, a no-show, a cancellation, a walk-in), today's agenda, two bookings waiting for approval, and
+confirmed ones over the next days. Times follow `TIMEZONE` in `wrangler.jsonc`, so the dashboard and calendar look
+lived-in whenever you set it up.
+
+To start over with a fresh demo (stop `npm run dev` first, so the database files aren't in use):
+
+```bash
+npm run reset:local
+```
+
+For an empty shop instead of the demo, run `node scripts/setup-local.mjs --reset --empty`. To seed content without
+the bookings, use `node scripts/seed.mjs --local --no-bookings` on an empty database.
 
 ### Checks
 
@@ -90,7 +98,9 @@ npm run check        # lint + typecheck + unit tests
 npm run preview      # production build running in the real Workers runtime (workerd), on port 8787
 ```
 
-`npm run preview` is the closest thing to production. Use it before deploying anything big.
+`npm run preview` is the closest thing to production: a local deployment of the real build, using the same local
+database as `npm run dev`. Use it before deploying anything big. Stop `npm run dev` first: the build replaces the
+`.open-next` folder, which the dev server keeps open on Windows.
 
 ### Local settings
 
@@ -197,9 +207,13 @@ design already chosen, pass `--theme`, `--primary` and `--accent` to `npm run cl
 | `ink` | Dark, sharp corners with red (good for tattoo studios) |
 
 - **Main color** overrides the preset's main color (buttons, highlights). Text on it switches between black and
-  white automatically for contrast.
+  white automatically for contrast. Shops without a cover photo get a cover drawn in this color.
 - **Accent color** overrides the soft accent surface color.
 - Without a custom color, the preset's own color is used.
+
+The **browser tab icon** (favicon) is set under **Page & links → Logo, icon and cover**: a square image, cropped and
+resized to a 256×256 PNG in the browser. Without one, the logo is used, and without a logo, the shop's first letter
+on its main color (served by `/brand-icon`).
 
 The presets live in `src/lib/theme.ts`. Add new presets there (and their names in `messages/*.json` under
 `admin.design.themes`); every client can pick them after the next deploy. A shop without a saved design gets
@@ -374,12 +388,14 @@ The design (preset and colors) is under **Page & links → Design**. See [Design
 
 | Command | What it does |
 |---|---|
+| `npm run setup:local` | One-step local setup: `.dev.vars`, database, demo shop, owner login |
+| `npm run reset:local` | Wipe the local database and photos and set up a fresh demo |
 | `npm run dev` | Local development server |
 | `npm run check` | Lint, typecheck, unit tests |
 | `npm run preview` | Production build in the local Workers runtime |
 | `npm run db:generate` | New migration from schema changes |
 | `npm run db:migrate:local` | Apply migrations to the local database |
-| `npm run db:seed:local` | Demo content in the local database |
+| `npm run db:seed:local` | Demo content and bookings in an empty local database |
 | `npm run owner:local -- --email ...` | Create or reset a local owner login |
 | `npm run client:new -- <slug> [flags]` | Create a client's database, bucket and config |
 | `npm run client:deploy -- <slug>... \| --all` | Build, migrate and deploy |
@@ -416,4 +432,8 @@ Uploads are limited to 5 MB after in-browser resizing (JPG, PNG or WebP).
 Run `npm run client:owner -- <slug> --email <their email>` to set a new one.
 
 **Build fails on Windows.**
-Use WSL. OpenNext doesn't fully support native Windows builds.
+Use WSL. OpenNext doesn't fully support native Windows builds. An `EPERM` error on `.open-next` means another process
+has files open there: stop `npm run dev` (and `npm run preview`) and build again.
+
+**The page still shows old styles after pulling changes.**
+Stop `npm run dev`, delete the `.next/dev` folder (the development build cache) and start it again.

@@ -35,13 +35,14 @@ const profileSchema = z.object({
   whatsapp: phone,
   removeAvatar: fields.checkbox,
   removeCover: fields.checkbox,
+  removeFavicon: fields.checkbox,
 });
 
 export async function saveProfile(_state: ActionState, formData: FormData): Promise<ActionState> {
   await requireOwner();
   const parsed = await parseForm(profileSchema, formData);
   if (!parsed.ok) return parsed.state;
-  const { removeAvatar, removeCover, ...values } = parsed.data;
+  const { removeAvatar, removeCover, removeFavicon, ...values } = parsed.data;
 
   const { phoneCountryCode } = await getSettings();
   const phones: Pick<Profile, "phone" | "whatsapp"> = { phone: "", whatsapp: "" };
@@ -56,7 +57,14 @@ export async function saveProfile(_state: ActionState, formData: FormData): Prom
   try {
     const avatarKey = await replaceImage(current.avatarKey, formData.get("avatar"), removeAvatar, "profile");
     const coverKey = await replaceImage(current.coverKey, formData.get("cover"), removeCover, "profile");
-    await storeProfile({ ...values, ...phones, avatarKey: avatarKey ?? "", coverKey: coverKey ?? "" });
+    const faviconKey = await replaceImage(current.faviconKey, formData.get("favicon"), removeFavicon, "profile");
+    await storeProfile({
+      ...values,
+      ...phones,
+      avatarKey: avatarKey ?? "",
+      coverKey: coverKey ?? "",
+      faviconKey: faviconKey ?? "",
+    });
   } catch (error) {
     console.error(error);
     return failure("imageFailed");

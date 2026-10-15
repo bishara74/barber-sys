@@ -54,6 +54,8 @@ export const profileSchema = z.object({
   whatsapp: text(),
   avatarKey: text(),
   coverKey: text(),
+  /** Browser tab icon. Falls back to the logo, then to the shop's initial in its colors. */
+  faviconKey: text(),
 });
 
 export type Profile = z.output<typeof profileSchema>;
@@ -71,6 +73,15 @@ export const designSchema = z.object({
 });
 
 export type Design = z.output<typeof designSchema>;
+
+/**
+ * The generated tab icon (the shop's initial on its main color, see app/brand-icon), versioned
+ * by name and colors so browsers pick up a change right away.
+ */
+export function brandIconUrl(profile: Profile, design: Design): string {
+  const version = [profile.nameEn, profile.nameAr, design.theme, design.primary].join("|").slice(0, 160);
+  return `/brand-icon?v=${encodeURIComponent(version)}`;
+}
 
 type ConfigKey = "settings" | "profile" | "design";
 

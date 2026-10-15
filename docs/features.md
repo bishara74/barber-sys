@@ -10,8 +10,10 @@ Milestones: **MVP** (first shop), **Pilot** (polish with 2-3 shops), **Phase 2**
 - [x] Link buttons, reorderable and hideable
 - [x] Services and prices grouped by type, with "call to book" for offline-only services
 - [x] Products with photos, price, stock state and "Ask on WhatsApp"
-- [x] Opening hours from staff working hours
+- [x] Opening hours from staff working hours, with "open now / opens at" status
+- [x] Directions, call and WhatsApp buttons
 - [x] Link previews (Open Graph) with the shop's cover
+- [x] Browser tab icon (favicon) uploaded by the owner, falling back to the logo or the shop's initial
 
 ### Customer booking
 - [x] Booking page (`/book`), mobile-first, deep link to a service (`/book?service=3`)
@@ -72,6 +74,7 @@ Milestones: **MVP** (first shop), **Pilot** (polish with 2-3 shops), **Phase 2**
 ### Deployment
 - [x] One deployment per client: Worker + D1 + R2, created by `npm run client:new`
 - [x] Design per client, picked by the owner in the dashboard: six theme presets plus color overrides, live preview
+- [x] One-step local environment with a demo shop and bookings (`npm run setup:local`, `npm run reset:local`)
 - [x] Build once, migrate and deploy all clients with `npm run client:deploy -- --all`
 - [x] CI (lint, typecheck, tests, build) and optional deploy on merge to main
 - [x] Cron job that expires unapproved bookings
@@ -103,6 +106,8 @@ Milestones: **MVP** (first shop), **Pilot** (polish with 2-3 shops), **Phase 2**
 
 ## Non-functional
 - [x] RTL layout on every screen
+- [x] Mobile-first dashboard with a bottom tab bar on phones; tables that drop columns on small screens
+- [x] Light, CSS-only motion (fade-ins, parallax cover, scroll-in sections), off with "reduce motion"
 - [x] Small pages and in-browser image resizing for weak connections
 - [x] Store only name and phone; delete a customer on request
 - [x] Unit tests for availability, pricing, phones, passwords, translations

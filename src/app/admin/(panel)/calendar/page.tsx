@@ -1,12 +1,12 @@
-import { CalendarOff, CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarOff, CalendarPlus, ChevronLeft, ChevronRight, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { MonthGrid } from "@/components/admin/calendar/month-grid";
 import { StaffFilter } from "@/components/admin/calendar/staff-filter";
-import { TimeGrid, type GridColumn } from "@/components/admin/calendar/time-grid";
+import { CalendarLegend, TimeGrid, type GridColumn } from "@/components/admin/calendar/time-grid";
 import { buttonClass } from "@/components/ui/button";
-import { EmptyState, PageHeader } from "@/components/ui/card";
+import { Card, EmptyState, PageHeader } from "@/components/ui/card";
 import { getBookingsInRange, getTimeOffInRange, visibleStaffId } from "@/lib/agenda";
 import { requireUser } from "@/lib/auth";
 import { getActiveStaff } from "@/lib/catalog";
@@ -96,7 +96,8 @@ export default async function CalendarPage({ searchParams }: PageProps<"/admin/c
       const day = addDays(first, i);
       return {
         key: day,
-        label: formatDay(day, locale),
+        overline: formatDay(day, locale, { weekday: "short" }),
+        label: formatDay(day, locale, { day: "numeric", month: "short" }),
         date: day,
         staffId: staff.length === 1 ? staff[0].id : null,
         ...onDay(day),
@@ -140,15 +141,17 @@ export default async function CalendarPage({ searchParams }: PageProps<"/admin/c
         }
       />
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="flex rounded-theme border border-border bg-card p-0.5">
+      <Card className="mb-4 flex flex-wrap items-center gap-3 p-2.5 sm:p-2.5">
+        <div className="flex rounded-theme bg-accent p-1" role="tablist" aria-label={tn("calendar")}>
           {VIEWS.map((option) => (
             <Link
               key={option}
               href={href({ view: option })}
+              role="tab"
+              aria-selected={option === view}
               className={cn(
-                "rounded-theme px-3 py-1.5 text-sm",
-                option === view ? "bg-primary text-primary-foreground" : "hover:bg-accent",
+                "rounded-[calc(var(--radius)-4px)] px-3.5 py-1.5 text-sm font-medium transition",
+                option === view ? "bg-card text-foreground shadow-soft" : "text-muted hover:text-foreground",
               )}
             >
               {t(option)}
@@ -156,18 +159,26 @@ export default async function CalendarPage({ searchParams }: PageProps<"/admin/c
           ))}
         </div>
         <div className="flex items-center gap-1">
-          <Link href={href({ date: prev })} className={buttonClass("ghost", "icon")} aria-label={t("previous")}>
+          <Link href={href({ date: prev })} className={buttonClass("ghost", "icon-sm")} aria-label={t("previous")}>
             <PrevIcon className="size-5" />
           </Link>
-          <Link href={href({ date: localDate(now, timeZone) })} className={buttonClass("outline", "sm")}>
+          <Link href={href({ date: localDate(now, timeZone) })} className={buttonClass("outline", "sm", "h-8")}>
             {t("today")}
           </Link>
-          <Link href={href({ date: next })} className={buttonClass("ghost", "icon")} aria-label={t("next")}>
+          <Link href={href({ date: next })} className={buttonClass("ghost", "icon-sm")} aria-label={t("next")}>
             <NextIcon className="size-5" />
           </Link>
         </div>
-        <h2 className="flex-1 font-semibold">{title}</h2>
-        {user.role === "owner" && allStaff.length > 1 ? <StaffFilter staff={allStaff} value={staffId} /> : null}
+        <h2 className="min-w-0 flex-1 truncate px-1 text-lg font-semibold">{title}</h2>
+        {user.role === "owner" && allStaff.length > 1 ? (
+          <div className="flex items-center gap-2">
+            <Users className="size-4 text-muted" aria-hidden />
+            <StaffFilter staff={allStaff} value={staffId} />
+          </div>
+        ) : null}
+      </Card>
+      <div className="mb-3 px-1">
+        <CalendarLegend />
       </div>
 
       {allStaff.length === 0 ? (
