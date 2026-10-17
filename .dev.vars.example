@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local development. Never commit .dev.vars.
+NEXTJS_ENV=development
+
+# Optional: Cloudflare Turnstile secret. Leave empty to skip bot checks locally.
+# Use the always-pass test secret below if you want to exercise the widget.
+TURNSTILE_SECRET_KEY=
+# TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
