@@ -52,6 +52,37 @@ npm run dev
 login. Open <http://localhost:3000> and <http://localhost:3000/admin> (`owner@example.com` / `local-dev-only`).
 `npm run reset:local` starts over from a fresh demo. See [Run it locally](docs/setup.md#run-it-locally).
 
+## Tests
+
+```bash
+npm run check              # lint, route types, TypeScript, and fast unit tests
+npm test                   # unit tests only
+npm run test:integration    # booking rules against isolated local Miniflare D1
+npx playwright install --with-deps chromium
+npm run reset:local        # stop any dev/preview server first; wipes local demo data/photos
+npm run test:e2e            # starts npm run dev automatically on localhost:3000
+```
+
+Integration tests apply the committed migrations to an ephemeral D1 database and seed their own fixtures.
+They do not use the demo database, Cloudflare credentials, or remote services. `npm test` stays independent of
+Miniflare and browsers.
+
+Browser tests share the local demo database and use the demo owner login. They create fresh customers and
+bookings, remove their records afterward, and restore changed settings even after failures. They use the shop's
+`Asia/Jerusalem` time zone and search from tomorrow for the first date with free slots; Friday stays closed.
+The language test starts without a locale cookie; other tests use English. Stop the server before each reset.
+An existing local dev server can be reused, but must point to this freshly reset demo.
+
+To check repeatability without retries:
+
+```bash
+npm run test:e2e -- --repeat-each=3 --retries=0
+```
+
+Failures retain screenshots/traces in `test-results/` and an HTML report in `playwright-report/`:
+`npx playwright show-report`. CI runs integration and browser tests in a separate job and uploads the browser
+report on failure. These generated directories are ignored by Git.
+
 ## Docs
 
 - [Setup](docs/setup.md): local development, Cloudflare, adding and deploying clients, themes, domains, backups.
