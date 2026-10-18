@@ -1,7 +1,7 @@
 // Deployment for "barber". Created by scripts/new-client.mjs; safe to edit (see docs/setup.md).
 {
   "$schema": "../node_modules/wrangler/config-schema.json",
-  "name": "barber",
+  "name": "ghattas",
   "main": "../worker.ts",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": [
@@ -15,7 +15,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "barber"
+      "service": "ghattas"
     }
   ],
   "d1_databases": [
