@@ -4,6 +4,17 @@ import { BRAND_ICON_PATHS } from "./brand-icons";
 
 const generic = { phone: Phone, email: Mail, maps: MapPin, website: Globe };
 
+const profileUrls: Partial<Record<SocialPlatform, string>> = {
+  instagram: "https://www.instagram.com/",
+  tiktok: "https://www.tiktok.com/@",
+  x: "https://x.com/",
+  threads: "https://www.threads.net/@",
+  snapchat: "https://www.snapchat.com/add/",
+  telegram: "https://t.me/",
+  youtube: "https://www.youtube.com/@",
+  facebook: "https://www.facebook.com/",
+};
+
 export const PLATFORM_LABELS: Record<SocialPlatform, string> = {
   instagram: "Instagram",
   tiktok: "TikTok",
@@ -38,5 +49,9 @@ export function socialHref(platform: SocialPlatform, value: string): string {
   if (platform === "phone") return `tel:${trimmed.replace(/[^\d+]/g, "")}`;
   if (platform === "email") return trimmed.startsWith("mailto:") ? trimmed : `mailto:${trimmed}`;
   if (platform === "whatsapp" && /^\+?[\d\s-]+$/.test(trimmed)) return `https://wa.me/${trimmed.replace(/\D/g, "")}`;
+  const profileUrl = profileUrls[platform];
+  // Dotted values without an explicit @ remain scheme-less domains.
+  const isHandle = /^@?[\w.-]+$/.test(trimmed) && (trimmed.startsWith("@") || !trimmed.includes("."));
+  if (profileUrl && isHandle) return `${profileUrl}${trimmed.replace(/^@/, "")}`;
   return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
 }
